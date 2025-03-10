@@ -8,15 +8,15 @@
 --12c 버전 이전 문법 허용 구문
 ALTER SESSION SET "_ORACLE_SCRIPT" = TRUE;
 --계정을 생성하는 구문(username : kh , password: kh1234)
-CREATE USER kh IDENTIFIED BY kh1234;
+CREATE USER workbook IDENTIFIED BY workbook;
 
 --실습시 반드시 필요한 권한 부여
-GRANT RESOURCE, CONNECT TO kh;
+GRANT RESOURCE, CONNECT TO workbook;
 --사용자 계정에게 권한을 부여 설정
 --리소스 권한 과 커넥트 권한.
 --RESOURCE : 테이블이나 인덱스같은 DB객체를 생성할 권한
 --CONNECT : DB에 연결하고 로그인 할수 있는 권한
 --권한을 안준채로 로그인하면 연결 안댐
 
-ALTER USER kh DEFAULT TABLESPACE SYSTEM QUOTA UNLIMITED ON SYSTEM;
+ALTER USER workbook DEFAULT TABLESPACE SYSTEM QUOTA UNLIMITED ON SYSTEM;
 --객체가 생성될수 있는 공간 할당량 무제한 지정
