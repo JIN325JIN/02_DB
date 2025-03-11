@@ -19,15 +19,15 @@ FROM EMPLOYEE;
 
 --AABAACAABBAA 이런 문자열이 있다고 가정
 --문자열을 앞에서 부터 검색하여 첫번째 B의 위치를 조회하라
-SELECT INSTR('AABAACAABBAA','B') FROM DUAL;
+SELECT INSTR('AABAACAABBAA','B') FROM DUAL;--3
 --자바랑 다르게 첫번째는 0이 아닌 1부터
 
 --문자열을 5번째 문자부터 검색하여 첫번째 B의 위치 조회
-SELECT INSTR ('AABAACAABBAA','B',5) FROM DUAL;
+SELECT INSTR ('AABAACAABBAA','B',5) FROM DUAL;--9
 -- 9번째에 있음
 
 --문자열을 5번째 문자부터 검색하여 두번째 B의 위치 조회
-SELECT INSTR ('AABAACAABBAA','B',5,2)FROM DUAL;
+SELECT INSTR ('AABAACAABBAA','B',5,2)FROM DUAL;--10
 --5번째 문자부터 검색해서 9가 첫번째B 10번째B가 두번째 B
 
 --EMPLOYEE 테이블에서 사원명, 이메일,이메일중 @ 위치 조회
@@ -47,9 +47,9 @@ SELECT EMP_NAME, SUBSTR (EMAIL,1,INSTR (EMAIL,'@')-1) AS "아이디" FROM EMPLOY
 --> 양쪽 공백 제거에 많이 사용함
 
 --옵션 : LEADING (앞쪽), TRAILING(뒤쪽), BOTH (양쪽, 기본값)
-SELECT TRIM ('     H  E L L O     ') FROM DUAL; 
+SELECT TRIM ('     H  E L L O     ') FROM DUAL; --앞에 공백 제거 
 
-SELECT TRIM(BOTH '#' FROM '####안녕####')FROM DUAL;
+SELECT TRIM(BOTH '#' FROM '####안녕####')FROM DUAL;--양쪽 공백 제거
 
 ----------------------------------------------------------------------------------
 --숫자 관련 함수
@@ -104,7 +104,9 @@ FROM EMPLOYEE;
 -- || : 연결 연산자 (문자열 이어쓰기) 
 --ADD_MONTHS(날짜,숫자): 날짜에 숫자만큼의 개월수를 더함(음수도 가능)
 
-SELECT ADD_MONTHS(SYSDATE,-1) FROM DUAL;--4개월 더함
+SELECT ADD_MONTHS(SYSDATE,4) FROM DUAL;--4개월 더함
+SELECT ADD_MONTHS(SYSDATE,-1) FROM DUAL;--1개월 뺌
+
 
 --LAST_DAY(날짜) : 해당 달의 마지막 날짜를 구함
 SELECT LAST_DAY(SYSDATE) FROM DUAL;--3월은 31일까지니까 3.31 출력
@@ -204,7 +206,8 @@ TO_CHAR(TO_DATE(SUBSTR(EMP_NO,1,INSTR(EMP_NO,'-')-1),'RRMMDD'),'YYYY"년"MM"월"
 -- 숫자 형변환 
 -- TO_NUMBER(문자 데이터, [포맷]): 문자형 데이터를 숫자 데이터로 변경
 
-SELECT '1,000,000'+500000 FROM DUAL;--SQL Error [1722] [42000]: ORA-01722: 수치가 부적합합니다
+SELECT '1,000,000'+500000 FROM DUAL;
+--SQL Error [1722] [42000]: ORA-01722: 수치가 부적합합니다
 
 SELECT TO_NUMBER('1,000,000','9,999,999') +500000 FROM DUAL;--1,500,000
 
@@ -226,7 +229,7 @@ SELECT EMP_NAME,SALARY,NVL(BONUS,0),SALARY*NVL(BONUS,0) FROM EMPLOYEE;--NULL대�
 --EMPLOYEE 테이블에서 보너스를 받으면 'O',안받으면 'X'
 
 SELECT EMP_NAME,NVL2(BONUS,'O','X')AS "보너스 수령" FROM EMPLOYEE; 
-
+----------------------------------------------------------------------------
 --선택 함수
 --여러가지 경우에 따라 알맞은 결과를 선택 할 수 있음
 --DECODE(계산식 |컬럼명 , 조건값1, 선택값1,조건값2,선택값2 ,.....,아무것도 일치 하지 않을때 )
