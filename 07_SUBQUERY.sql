@@ -21,7 +21,7 @@ WHERE EMP_NAME ='노옹철';--'D9'
 --2. 부서코드가 'D9'인 직원의 이름, 부서코드 조회(메인쿼리)
 SELECT EMP_NAME,DEPT_CODE
 FROM EMPLOYEE
-WHERE DEPT_CODE = 'D9';
+WHERE DEPT_CODE = 'D9';--선동일,송종기,노옹철
 
 --3.부서코드가 노옹철 사원과 같은 소속의 직원명단 조회 --> 위에 단계를 하나의 쿼리로 
 

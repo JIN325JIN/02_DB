@@ -1,0 +1,134 @@
+--3/12 서브쿼리 예제--
+--서브쿼리 예시1. 부서코드가 노옹철 사원과 같은 소속 직원의 이름 부서코드 조회
+SELECT * FROM EMPLOYEE;
+SELECT * FROM DEPARTMENT;
+SELECT * FROM JOB;
+
+
+SELECT DEPT_CODE
+FROM EMPLOYEE
+WHERE EMP_NAME = '노옹철';--D9
+
+SELECT EMP_NAME,DEPT_CODE
+FROM EMPLOYEE
+WHERE DEPT_CODE = (SELECT DEPT_CODE
+FROM EMPLOYEE
+WHERE EMP_NAME = '노옹철');
+
+--서브쿼리 예시 2.전 직원의 평균 급여보다 많은 급여를 받고있는 직원의 사번,이름,직급코드,급여 조회
+
+SELECT CEIL(AVG(SALARY))
+FROM EMPLOYEE;
+
+SELECT EMP_ID,EMP_NAME,JOB_CODE,SALARY
+FROM EMPLOYEE
+WHERE SALARY >=(SELECT CEIL(AVG(SALARY))
+FROM EMPLOYEE);
+
+--단일행 서브쿼리 예시1. 전 직원의 급여 평균보다 많은 (초과)급여를 받는 직원의 이름, 직급명,부서명,급여를 직급순으로 정렬하여 조회
+
+SELECT EMP_NAME,JOB_NAME,DEPT_TITLE, SALARY
+FROM EMPLOYEE
+JOIN JOB USING (JOB_CODE)
+LEFT JOIN DEPARTMENT ON (DEPT_CODE=DEPT_ID)
+WHERE SALARY > (SELECT AVG(SALARY) FROM EMPLOYEE)
+ORDER BY JOB_CODE;
+
+
+--단일행 서브쿼리 예시2. 가장 적은 급여를 받는 직원의 사번,이름,직급명,부서코드,급여,입사일 조회
+
+SELECT MIN(SALARY) FROM EMPLOYEE;
+
+SELECT EMP_ID,EMP_NAME,JOB_NAME,DEPT_CODE,SALARY,HIRE_DATE
+FROM EMPLOYEE
+JOIN JOB USING (JOB_CODE)
+LEFT JOIN DEPARTMENT ON(DEPT_CODE = DEPT_ID)
+WHERE SALARY = (SELECT MIN(SALARY) FROM EMPLOYEE);--방명수
+
+--단일행 서브쿼리 예시3.노옹철 사원의 급여보다 많이 받는 직원의 사번,이름,부서명,직급명,급여 조회
+
+
+--단일행 서브쿼리 예시4.부서별 (부서가 없는 사람 포함 )급여의 합계 중 가장 큰 부서의 부서명, 급여 합계를 조회
+
+
+
+--다중행 서브쿼리 예시1.부서별 최고 급여를 받는 직원의 이름,직급,부서,급여를 부서 오름차순으로 정렬하여 조회
+
+--다중행 서브쿼리 예시2.사수에 해당하는 직원에 대해 조회 사번,이름,부서명,직급명,구분(사수/사원)조회 사수 == MANAGER _ID 컬럼에 작성된 사번인 사람 => (선택함수 or union 사용)
+
+--다중행 서브쿼리 예시3.대리 직급의 직원들 중에서 과장 직급의 최소 급여보다 많이 받는 직원의 사번 , 이름, 직급명, 급여 조회 (any 사용)
+
+
+--다중행 서브쿼리 예시4.차장 직급의 급여 중 가장 큰 값 보다 많이 받는 과장 직급의 직원  사번, 이름, 직급, 급여 조회
+
+--서브쿼리 중첩 사용 (응용편)
+--LOCATION 테이블에서 NATIONAL CODE가 KO 인 경우의 LOCAL_CODE 와 DEPARTMENT 테이블의 LOCATION_ID와 동일한 DEPT_ID가 EMPLOYEE테이블의 DEPT_CODE와 동일한 사원 조회.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--쿼리 연습문제--
+--연습문제 1. 노옹철 사원과 같은 부서 , 같은 직급인 사원을 조회(단 노옹철 제외)
+--사번 이름 부서코드 직급코드 부서명 직급명
+SELECT * FROM DEPARTMENT;
+SELECT * FROM JOB;
+SELECT * FROM EMPLOYEE;
+
+SELECT DEPT_CODE, JOB_CODE
+FROM EMPLOYEE
+JOIN JOB USING (JOB_CODE)
+WHERE EMP_NAME = '노옹철';--D9,J2
+
+
+SELECT EMP_ID, EMP_NAME,DEPT_CODE,JOB_CODE,DEPT_TITLE,JOB_NAME
+FROM EMPLOYEE
+JOIN JOB USING (JOB_CODE)
+LEFT JOIN DEPARTMENT ON (DEPT_ID= DEPT_CODE)
+WHERE (DEPT_CODE,JOB_CODE)=(SELECT DEPT_CODE, JOB_CODE FROM EMPLOYEE WHERE EMP_NAME = '노옹철')
+AND EMP_NAME != '노옹철';
+
+--연습문제 2. 2000년도에 입사한 사원의 부서와 직급이 같은 사원을 조회
+--사번 이름 부서코드 직급코드 입사일
+
+SELECT DEPT_CODE,JOB_CODE
+FROM EMPLOYEE
+JOIN JOB USING (JOB_CODE)
+LEFT JOIN DEPARTMENT ON (DEPT_ID  =DEPT_CODE)
+WHERE HIRE_DATE BETWEEN '2000-01-01'AND '2000-12-31';--J6,J3
+
+SELECT EMP_ID,EMP_NAME,DEPT_CODE,JOB_CODE,HIRE_DATE
+FROM EMPLOYEE
+WHERE (DEPT_CODE,JOB_CODE) =(SELECT DEPT_CODE,JOB_CODE FROM EMPLOYEE
+JOIN JOB USING (JOB_CODE) LEFT JOIN DEPARTMENT ON (DEPT_ID  =DEPT_CODE)
+WHERE HIRE_DATE BETWEEN '2000-01-01'AND '2000-12-31');
+
+
+--연습문제 3. 77년생 여자사원과 동일한 부서이면서 동일한 사수를 가지고있는 사원 조회
+-- 사번 이름 부서코드 사수번호 주민번호 입사일
+
+SELECT DEPT_CODE,MANAGER_ID
+FROM EMPLOYEE
+WHERE EMP_NO LIKE '77%' AND SUBSTR(EMP_NO,8,1)='2';--D1,214
+
+SELECT EMP_ID,EMP_NAME,DEPT_CODE,MANAGER_ID,EMP_NO,HIRE_DATE
+FROM EMPLOYEE
+WHERE (DEPT_CODE,MANAGER_ID) =(SELECT DEPT_CODE,MANAGER_ID
+FROM EMPLOYEE
+WHERE EMP_NO LIKE '77%' AND SUBSTR(EMP_NO,8,1)='2');
