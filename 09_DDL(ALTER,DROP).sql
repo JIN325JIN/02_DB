@@ -21,7 +21,6 @@
 --			ADD [CONSTRAINT 제약조건명] 제약조건(지정할컬럼명)
 --			[REFERENCES 테이블명[(컬럼명)]]; <-- FK 인 경우 추가
 
-
 -- 2) 삭제 : ALTER TABLE 테이블명 DROP CONSTRAINT 제약조건명;
 
 -- * 제약조건 자체를 수정하는 구문은 별도 존재하지 않음!
@@ -201,7 +200,7 @@ DROP TABLE TB1;
 --> CASCADE CONSTRAINTS : 삭제 하려는 테이블과 연결된 FK 제약조건을 모두 삭제 
 
 
-DROP TABLE TB1 CASCADE CONSTRAINTS;
+DROP TABLE TB1 CASCADE CONSTRAINTS;--부모삭제
 -- 테이블 삭제시 FK 관계도 모두 삭제
 
 

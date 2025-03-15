@@ -138,7 +138,7 @@ FROM EMPLOYEE
 GROUP BY CUBE(DEPT_CODE,JOB_CODE)
 ORDER BY DEPT_CODE;
 ------------------------------------------
---집합연산자
+--집합연산자 : SET OPERATOR
 --여러 SELECT의 결과 ( RESULT SET)를 하나의 결과로 만드는 연산자
 
 -- UNION(합집합) : 두 셀렉의 결과를 하나로 합침 단 중복은 한번만 작성
@@ -147,12 +147,16 @@ ORDER BY DEPT_CODE;
 -- MINUS(차집합 ) : A에서 A,B 교집합 부분을 제거하고 조회
 
 --EMPLOYEE 테이블에서 
+-- (1번째 SELECT 문)부서코드가 'D5'인 사원의 사번, 이름,부서코드,급여 조회
+-- (2번째 SELECT 문) 급여가 300만원 초과인 사원의 사번, 이름,부서코드,급여 조회
+
+
 --(1번째 SELECT 문)부서코드가 'D5'인 사원의 사번, 이름,부서코드,급여 조회
 SELECT EMP_ID,EMP_NAME,DEPT_CODE,SALARY
 FROM EMPLOYEE
 WHERE DEPT_CODE ='D5'
-MINUS
--- 2번째 (SELECT 문) 급여가 300만원 초과인 사원의 사번, 이름,부서코드,급여 조회
+/*UNION, INTERSECT,UNIONALL*/MINUS
+-- (2번째 SELECT 문) 급여가 300만원 초과인 사원의 사번, 이름,부서코드,급여 조회
 SELECT EMP_ID,EMP_NAME,DEPT_CODE,SALARY
 FROM EMPLOYEE
 WHERE SALARY>=3000000;
@@ -163,13 +167,31 @@ WHERE SALARY>=3000000;
 SELECT EMP_ID,EMP_NAME,DEPT_CODE,SALARY
 FROM EMPLOYEE
 WHERE DEPT_CODE = 'D5'
+UNION 
+SELECT EMP_ID,EMP_NAME,DEPT_CODE
+FROM EMPLOYEE
+WHERE SALARY>3000000;
+--SQL Error [1789] [42000]: ORA-01789: 질의 블록은 부정확한 수의 결과 열을 가지고 있습니다.
 
+SELECT EMP_ID,EMP_NAME,DEPT_CODE,SALARY
+FROM EMPLOYEE
+WHERE DEPT_CODE = 'D5'
+UNION 
+SELECT EMP_ID,EMP_NAME,DEPT_CODE,'가나다'
+FROM EMPLOYEE
+WHERE SALARY>3000000;
+--SQL Error [1790] [42000]: ORA-01790: 대응하는 식과 같은 데이터 유형이어야 합니다
+
+
+SELECT EMP_ID,EMP_NAME,DEPT_CODE,SALARY
+FROM EMPLOYEE
+WHERE DEPT_CODE = 'D5'
 UNION 
 SELECT EMP_ID,EMP_NAME,DEPT_CODE,1
 FROM EMPLOYEE
 WHERE SALARY>3000000;
---SQL Error [1789] [42000]: ORA-01789: 질의 블록은 부정확한 수의 결과 열을 가지고 있습니다.
---SQL Error [1790] [42000]: ORA-01790: 대응하는 식과 같은 데이터 유형이어야 합니다
+
+
 
 -- 서로 다른 테이블이지만 컬럼에 타입과 개수만 일치하면 집합 연산자 사용 가능!
 

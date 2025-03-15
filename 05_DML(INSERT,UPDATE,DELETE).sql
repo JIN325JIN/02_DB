@@ -51,7 +51,7 @@ SELECT * FROM EMPLOYEE2
 WHERE EMP_ID =900;
 --조회 다시 해봄 (영구저장 되었기때문에 롤백해도 되돌리기 안됨)
 -----------------------------------------------------------------------
- CREATE TABLE EMP_01(EMP_ID NUMBER,EMP_NAME VARCHAR2(30),DEPT_TITLE VARCHAR2(20));
+CREATE TABLE EMP_01(EMP_ID NUMBER,EMP_NAME VARCHAR2(30),DEPT_TITLE VARCHAR2(20));
 
 SELECT * FROM EMP_01;
 
@@ -225,7 +225,6 @@ ROLLBACK;
 -- DELETE 보다 수행속도가 좀더 빠름
 -- ROLLBACK을 통해 복구 할수 없음.
 
-
 --TRUNCATE 테스트용 테이블 생성
 CREATE TABLE EMPLOYEE3
 AS SELECT *FROM EMPLOYEE2;
@@ -247,4 +246,3 @@ SELECT * FROM EMPLOYEE3;
 --DELETE : 휴지통 버리기 
 --TRUNCATE : 완전 삭제 
 ---------------------------------------------------------------
-
