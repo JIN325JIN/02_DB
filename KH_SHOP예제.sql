@@ -69,7 +69,7 @@ SELECT * FROM CUSTOMERS; -- 세번째 테이블 확인
 --------------------------------------------------------------------------
 CREATE TABLE ORDERS(
 ORDER_ID NUMBER PRIMARY KEY,
-ORDER_DATE DATE DEFAULT SYSDATE,
+ORDER_DATE DATE DEFAULT TRUNC(SYSDATE),--절삭 까먹음
 STATUS CHAR(1) CONSTRAINT STATUS_CHECK CHECK(STATUS IN ('Y','N')),
 CUSTOMER_ID NUMBER CONSTRAINT CUSTOMER_ID_FK REFERENCES CUSTOMERS(CUSTOMER_ID) ON DELETE CASCADE
 );
@@ -110,9 +110,10 @@ INSERT INTO ORDER_DETAILS VALUES (666,499,201,3,3600000);
 
 SELECT * FROM ORDER_DETAILS; --다섯번째 테이블 확인
 -----------------------------------------------------------------------------------------
+
 --1. 쇼핑몰 관리자가 주문은 받았으나, 아직 처리가 안된 주문을 처리하려고한다. 
 --현재 주문 내역 중 아직 처리되지 않은 주문을 조회하시오.(고객명, 주문일, 처리상태)
-SELECT NAME AS "고객명 ",ORDER_DATE AS "주문 일",STATUS AS "처리상태"
+SELECT NAME AS "고객명 ",TO_CHAR(ORDER_DATE,'YYYY/MM/DD HH24: MI:SS') AS "주문 일",STATUS AS "처리상태"
 FROM CUSTOMERS
 JOIN ORDERS USING (CUSTOMER_ID)
 WHERE STATUS ='N';
@@ -120,7 +121,7 @@ WHERE STATUS ='N';
 --2. 홍길동 고객이 2024년도에 본인이 주문한 전체 내역을 조회하고자 한다.
 --주문번호, 주문날짜, 처리상태 조회하시오(ORDER_DETAILS.ORDER_ID,ORDERS.ORDER_DATE,ORDERS.STATUS)
 
-SELECT ORDER_ID AS "주문 번호 ",ORDER_DATE AS "주문 날짜",STATUS AS "처리 상태"
+SELECT ORDER_ID AS "주문 번호 ",TO_CHAR (ORDER_DATE, 'YYYY/MM/DD HH24:MI:SS') AS "주문 날짜",STATUS AS "처리 상태"
 FROM ORDERS
 JOIN ORDER_DETAILS USING (ORDER_ID)
 JOIN CUSTOMERS USING (CUSTOMER_ID)
@@ -138,3 +139,5 @@ JOIN CUSTOMERS c ON c.CUSTOMER_ID = o.CUSTOMER_ID
 JOIN CATEGORIES ct ON ct.CATEGORY_ID  =p.CATEGORY
 WHERE NAME = '유관순'
 ORDER BY QUANTITY DESC ;--수량순으로 정렬?
+
+
