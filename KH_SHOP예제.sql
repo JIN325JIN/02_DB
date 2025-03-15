@@ -1,13 +1,16 @@
+--kh_shop이라는 사용자를 만들려면 sys로부터 사용자 권한을 부여받아햠
+
 ALTER SESSION SET "_ORACLE_SCRIPT" = TRUE;--이전구문 허용
 
 CREATE USER kh_shop IDENTIFIED BY 1234;-- 생성
 
 GRANT CREATE SESSION TO kh_shop;--권한부여
 
-GRANT CREATE TABLE TO kh_shop;
+GRANT CREATE TABLE TO kh_shop;-- 테이블 만들 권한
 
-ALTER USER kh_shop DEFAULT TABLESPACE SYSTEM QUOTA UNLIMITED ON SYSTEM;
+ALTER USER kh_shop DEFAULT TABLESPACE SYSTEM QUOTA UNLIMITED ON SYSTEM;-- 용량.
 ------------------------------------------------------------------------
+--문제를 풀기위한 테이블 만들기--
 CREATE TABLE CATEGORIES(
 CATEGORY_ID NUMBER PRIMARY KEY,
 CATEGORY_NAME VARCHAR2(100)
@@ -23,7 +26,7 @@ INSERT INTO CATEGORIES VALUES (1,'스마트폰');
 INSERT INTO CATEGORIES VALUES (2,'TV');
 INSERT INTO CATEGORIES VALUES (3,'GAMING');
 
-SELECT * FROM CATEGORIES;
+SELECT * FROM CATEGORIES;-- 첫번째 테이블 확인
 -----------------------------------------------------------------------------
 CREATE TABLE PRODUCTS(
 PRODUCT_ID NUMBER PRIMARY KEY,
@@ -43,7 +46,7 @@ INSERT INTO PRODUCTS VALUES (102,'SAMSUNG GALAXY S24',1,1800000,50);
 INSERT INTO PRODUCTS VALUES (201,'LG OLED TV',2,3600000,10);
 INSERT INTO PRODUCTS VALUES (301,'SONY PLAYSTATION5',3,700000,15);
 
-SELECT * FROM PRODUCTS;
+SELECT * FROM PRODUCTS;-- 두번째 테이블 확인
 --------------------------------------------------------------------
 CREATE TABLE CUSTOMERS(
 CUSTOMER_ID NUMBER PRIMARY KEY,
@@ -62,7 +65,7 @@ COMMENT ON COLUMN CUSTOMERS.PHONE IS '전화번호';
 INSERT INTO CUSTOMERS VALUES (1,'홍길동','남','서울시 성동구 왕십리','010-1111-2222');
 INSERT INTO CUSTOMERS VALUES (2,'유관순','여','서울시 종로구 안국동','010-3333-1111');
 
-SELECT * FROM CUSTOMERS;
+SELECT * FROM CUSTOMERS; -- 세번째 테이블 확인
 --------------------------------------------------------------------------
 CREATE TABLE ORDERS(
 ORDER_ID NUMBER PRIMARY KEY,
@@ -82,7 +85,7 @@ INSERT INTO ORDERS VALUES (777,'2024-03-11','N',2);
 INSERT INTO ORDERS VALUES (134,'2022-12-25','Y',1);
 INSERT INTO ORDERS VALUES (499,'2020-01-03','Y',1);
 
-SELECT * FROM ORDERS;
+SELECT * FROM ORDERS; -- 네번째 테이블 확인
 ----------------------------------------------------------------------
 CREATE TABLE ORDER_DETAILS(
 ORDER_DETAIL_ID NUMBER PRIMARY KEY,
@@ -105,23 +108,33 @@ INSERT INTO ORDER_DETAILS VALUES (444,777,301,5,700000);
 INSERT INTO ORDER_DETAILS VALUES (555,134,102,1,1800000);
 INSERT INTO ORDER_DETAILS VALUES (666,499,201,3,3600000);
 
-SELECT * FROM ORDER_DETAILS;
+SELECT * FROM ORDER_DETAILS; --다섯번째 테이블 확인
 -----------------------------------------------------------------------------------------
 --1. 쇼핑몰 관리자가 주문은 받았으나, 아직 처리가 안된 주문을 처리하려고한다. 
 --현재 주문 내역 중 아직 처리되지 않은 주문을 조회하시오.(고객명, 주문일, 처리상태)
-SELECT NAME,ORDER_DATE,STATUS
+SELECT NAME AS "고객명 ",ORDER_DATE AS "주문 일",STATUS AS "처리상태"
 FROM CUSTOMERS
 JOIN ORDERS USING (CUSTOMER_ID)
 WHERE STATUS ='N';
 
 --2. 홍길동 고객이 2024년도에 본인이 주문한 전체 내역을 조회하고자 한다.
---주문번호, 주문날짜, 처리상태 조회하시오
+--주문번호, 주문날짜, 처리상태 조회하시오(ORDER_DETAILS.ORDER_ID,ORDERS.ORDER_DATE,ORDERS.STATUS)
 
-SELECT
+SELECT ORDER_ID AS "주문 번호 ",ORDER_DATE AS "주문 날짜",STATUS AS "처리 상태"
+FROM ORDERS
+JOIN ORDER_DETAILS USING (ORDER_ID)
+JOIN CUSTOMERS USING (CUSTOMER_ID)
+WHERE NAME ='홍길동' AND ORDER_DATE LIKE '24%';-- 왜 LIKE '2024-%'하면 조회안될까?
 
 
 --3. 유관순 고객이 지금껏 주문한 상품의 수량 별 금액을 조회하려고 한다.
 --주문번호, 상품명, 수량, 개별금액, 주문별금액을 조회하시오.
 
-
-
+SELECT ORDER_ID AS "주문 번호",PRODUCT_NAME AS "상품 명",QUANTITY AS "수량",PRICE_PER_UNIT AS "개별 금액",PRICE_PER_UNIT * QUANTITY AS"주문별 금액 합계"
+FROM ORDER_DETAILS 
+JOIN ORDERS o USING (ORDER_ID)
+JOIN PRODUCTS p USING (PRODUCT_ID)
+JOIN CUSTOMERS c ON c.CUSTOMER_ID = o.CUSTOMER_ID
+JOIN CATEGORIES ct ON ct.CATEGORY_ID  =p.CATEGORY
+WHERE NAME = '유관순'
+ORDER BY QUANTITY DESC ;--수량순으로 정렬?
