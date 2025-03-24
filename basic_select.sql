@@ -411,11 +411,6 @@ ORDER BY "계열 학과명" DESC;
 
 
 
-
-
-
-
-
 --서브쿼리--
 
 SELECT DEPARTMENT_NO

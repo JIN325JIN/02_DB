@@ -16,7 +16,7 @@
 
 SELECT * FROM USER_TABLES; -- KH계정에서 쓴 테이블 명세
 SELECT * FROM USER_CONSTRAINTS;-- 제약조건
-SELECT * FROM USER_CONS_COLUMNS;
+SELECT * FROM USER_CONS_COLUMNS;--제약조건이 적용된 컬럼에 대한 정보(제약조건 조회)
 
 ---------------------------------------------------------------------
 
@@ -85,11 +85,20 @@ SELECT * FROM USER_CONS_COLUMNS;
 
 
 --MEMBER 테이블 생성
+--바챠2 문자열 20. 영어숫자2, 한글 3바이트
+--영어로 20글자 가능
+--이름은 한글로 10글자 : 데이터 반환하기에 넉넉하게 줘도댐
+--주민번호는 고정길이라서 챠로 14 (-포함)
+--가입일은 default인데, 그건 sysdate임
 CREATE TABLE "MEMBER" (
 MEMBER_ID VARCHAR2(20),MEMBER_PWD VARCHAR2(20),--크기 20바이트 (영어숫자 1, 한글3)
 MEMBER_NAME VARCHAR2(30),MEMBER_SSN CHAR(14), --'991213-1234567'
 ENROLL_DATE DATE DEFAULT SYSDATE --입력이 안되면 기본적으로 SYSDATE주겠다
 );
+
+
+--update row는 dml 관련 (행 삭제 수정은 나옴 update)
+--create 는 행 안나옴 행이 변경된것이 아니기에.
 
 --만든 테이블 확인하기
 SELECT * FROM MEMBER;
